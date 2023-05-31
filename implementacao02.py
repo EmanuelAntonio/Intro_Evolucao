@@ -19,7 +19,7 @@ def mutacao_bidirecional(p0, q0, u, v, t):
 
 
 def implementacao02():
-    t = int(70)
+    t = int(80)
     # u0 = np.array([1E-1, 1E-2, 1E-3, 1E-4, 1E-5, 1E-6, 1E-7, 1E-8, 1E-9, 1E-10])
     u0 = np.array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1])
     p0 = np.array([0.1, 0.5, 0.9])
@@ -43,7 +43,10 @@ def implementacao02():
                                      box_aspect=1)
                 ax.plot(t0, p, '-g', label='p')
                 ax.plot(t0, q, '-b', label='q')
-                ax.vlines(x=EHW, ymin=0, ymax=1, colors='purple', ls=':', lw=2, label='EHW = ' + str(EHW))
+                if EHW > 70:
+                    ax.vlines(x=69, ymin=0, ymax=1, colors='purple', ls=':', lw=2, label='EHW > ' + str(70))
+                else:
+                    ax.vlines(x=EHW, ymin=0, ymax=1, colors='purple', ls=':', lw=2, label='EHW = ' + str(EHW))
                 plt.legend(loc='upper right')
                 plt.grid()
                 chisquare.write("p0 = " + str(P) + " q0 = " + str(1 - P) + " u_" + str(u) + " EHW = " + str(
