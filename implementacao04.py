@@ -1,10 +1,10 @@
+import math
 from implementacao01 import *
 
-path = "D:/Evolucao"
 
 def plot_p_t(p, q, t, caso):
-    plt.plot(t, p, label="p")
-    plt.plot(t, q, label="q")
+    plt.plot(t[1:], p[1:], label="p")
+    plt.plot(t[1:], q[1:], label="q")
     plt.title("p x t (p0 = " + str(p[0]) + ")")
     plt.legend()
     plt.xlabel("t")
@@ -25,9 +25,9 @@ def plot_p_deltap(p, dp, caso):
 
 
 def plot_p_alelo(p, AA, Aa, aa, caso):
-    plt.plot(p, AA, label="AA")
-    plt.plot(p, Aa, label="Aa")
-    plt.plot(p, aa, label="aa")
+    plt.plot(p[1:], AA[1:], label="AA")
+    plt.plot(p[1:], Aa[1:], label="Aa")
+    plt.plot(p[1:], aa[1:], label="aa")
     plt.title("p x AA, Aa, aa (p0 = " + str(p[0]) + ")")
     plt.xlabel("p")
     plt.ylabel("Fequência Alélica")
@@ -85,4 +85,5 @@ def implementacao04():
             plot_p_deltap(p_array, delta_p, casos[int(w[3])])
             plot_p_alelo(p_array, AA, Aa, aa, casos[int(w[3])])
             plot_p_wmed(p_array, w_med, casos[int(w[3])])
+            # print(delta_p)
 

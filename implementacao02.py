@@ -11,7 +11,9 @@ def mutacao_bidirecional(p0, q0, u, v, t):
     while t0 < t - 1:
         p[t0 + 1] = (1 - u) * p[t0] + v * q[t0]
         q[t0 + 1] = (1 - v) * q[t0] + u * p[t0]
-        X[t0 + 1] = qui_quadrado(p[0:(t0 + 1)], np.ones_like(p[0:(t0 + 1)]) * p0)
+        obs = 100 * np.array([p[t0 + 1]**2, 2 * p[t0 + 1] * q[t0 + 1], q[t0 + 1]**2])
+        exp = 100 * np.array([p0**2, 2 * p0 * q0, q0**2])
+        X[t0 + 1] = qui_quadrado(obs, exp)
         t0 += 1
     return p, q, X
 

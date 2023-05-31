@@ -7,15 +7,19 @@ import copy
 
 EPSILON = 1E-6
 
-path = "./Evolucao/implementacao01"
+path = "D:/Evolucao"
 
 def Hardy_Weinberg(p, q):
     return np.multiply(p, p) + 2 * np.multiply(p, q) + np.multiply(q, q)
 
 
+#https://towardsdatascience.com/chi-square-test-with-python-d8ba98117626
 def qui_quadrado(obs, exp):
+    # significance level
+    alpha = 0.05
+
     chi_squared = np.sum(((obs - exp)**2) / exp)
-    critical_value = chi2.ppf(q = 0.95, df = 1)
+    critical_value = chi2.ppf(q=1 - alpha, df=1)
     p_value = 1 - chi2.cdf(x=chi_squared, df=1)
     return [chi_squared, critical_value, p_value]
 
@@ -31,13 +35,15 @@ def mutacao_unidirecional(p0, q0, u, t):
     while t0 < t - 1:
         p[t0 + 1] = (1 - u) * p[t0]
         q[t0 + 1] = q[t0] + u * p[t0]
-        X[t0 + 1] = qui_quadrado(p[0:(t0 + 1)], np.ones_like(p[0:(t0 + 1)]) * p0)
+        obs = 100 * np.array([p[t0 + 1]**2, 2 * p[t0 + 1] * q[t0 + 1], q[t0 + 1]**2])
+        exp = 100 * np.array([p0**2, 2 * p0 * q0, q0**2])
+        X[t0 + 1] = qui_quadrado(obs, exp)
         t0 += 1
     return p, q, X
 
 
 def implementacao01():
-    t = int(70)
+    t = int(10000)
     # u0 = np.array([1E-1, 1E-2, 1E-3, 1E-4, 1E-5, 1E-6, 1E-7, 1E-8, 1E-9, 1E-10])
     u0 = np.array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1])
     p0 = np.array([0.1, 0.5, 0.9])
@@ -58,8 +64,8 @@ def implementacao01():
 
             ax = fig.add_subplot(1, p0.shape[0], cont, xlabel='gerações', ylabel='frequência(p0=' + str(P) + ')',
                                  box_aspect=1)
-            ax.plot(t0, p, '-g', label='p')
-            ax.plot(t0, q, '-b', label='q')
+            ax.plot(t0[:70], p[:70], '-g', label='p')
+            ax.plot(t0[:70], q[:70], '-b', label='q')
             ax.vlines(x=EHW, ymin=0, ymax=1, colors='purple', ls=':', lw=2, label='EHW = ' + str(EHW))
             plt.legend(loc='upper right')
             plt.grid()
