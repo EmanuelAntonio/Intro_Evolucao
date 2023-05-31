@@ -2,9 +2,9 @@ from implementacao01 import *
 
 path = "D:/Evolucao"
 
-def plot_p_t(p, t, caso):
+def plot_p_t(p, q, t, caso):
     plt.plot(t, p, label="p")
-    plt.plot(t, np.ones_like(p) - p, label="q")
+    plt.plot(t, q, label="q")
     plt.title("p x t (p0 = " + str(p[0]) + ")")
     plt.legend()
     plt.xlabel("t")
@@ -56,6 +56,7 @@ def implementacao04():
     Aa = np.array(range(t), dtype=np.float64)
     aa = np.array(range(t), dtype=np.float64)
     p_array = np.array(range(t), dtype=np.float64)
+    q_array = np.array(range(t), dtype=np.float64)
     delta_p = np.array(range(t), dtype=np.float64)
     w_med = np.array(range(t), dtype=np.float64)
     # inicialização das variáveis
@@ -63,30 +64,24 @@ def implementacao04():
         for p in p0:
             AA[0] = p * p
             Aa[0] = 2 * p * (1 - p)
-            aa[0] = (1 - p) ** 2
+            aa[0] = (1 - p) * (1 - p)
             p_array[0] = p
+            q_array[0] = 1 - p
             delta_p[0] = 0
             t0 = 1
 
             while t0 < t:
-                # W = AA[t0 - 1] * w[0] + Aa[t0 - 1] * w[1] + aa[t0 - 1] * w[2]
-                # # p_array[t0] = (AA[t0 - 1] * w[0] + 0.5 * Aa[t0 - 1] * w[1]) / W
-                # AA[t0] = AA[t0 - 1] * w[0] / W
-                # Aa[t0] = Aa[t0 - 1] * w[1] / W
-                # aa[t0] = aa[t0 - 1] * w[2] / W
-                # p_array[t0] = AA[t0] ** 0.5
-                # w_med[t0] = W
-                # delta_p[t0] = p_array[t0] - p_array[t0 - 1]
-                # t0 += 1
                 w_avg = AA[t0 - 1] * w[0] + Aa[t0 - 1] * w[1] + aa[t0 - 1] * w[2]
-                p_array[t0] = (AA[t0 - 1] * w[0] + Aa[t0 - 1] * w[1]) / w_avg
+                p_array[t0] = (AA[t0 - 1] * w[0] + 0.5 * Aa[t0 - 1] * w[1]) / w_avg
+                q_array[t0] = (aa[t0 - 1] * w[0] + 0.5 * Aa[t0 - 1] * w[1]) / w_avg
                 AA[t0] = p_array[t0] * p_array[t0]
-                Aa[t0] = 2 * p_array[t0] * (1 - p_array[t0])
-                aa[t0] = (1 - p_array[t0]) * (1 - p_array[t0])
+                Aa[t0] = 2 * p_array[t0] * q_array[t0]
+                aa[t0] = q_array[t0] * q_array[t0]
                 w_med[t0] = w_avg
                 delta_p[t0] = p_array[t0] - p_array[t0 - 1]
                 t0 += 1
-            plot_p_t(p_array, range(t), casos[int(w[3])])
+
+            plot_p_t(p_array, q_array, range(t), casos[int(w[3])])
             plot_p_deltap(p_array, delta_p, casos[int(w[3])])
             plot_p_alelo(p_array, AA, Aa, aa, casos[int(w[3])])
             plot_p_wmed(p_array, w_med, casos[int(w[3])])
