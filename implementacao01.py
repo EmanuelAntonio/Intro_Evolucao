@@ -9,9 +9,6 @@ EPSILON = 1E-6
 
 path = "D:/Evolucao"
 
-def Hardy_Weinberg(p, q):
-    return np.multiply(p, p) + 2 * np.multiply(p, q) + np.multiply(q, q)
-
 
 def qui_quadrado(obs, exp):
     # https://towardsdatascience.com/chi-square-test-with-python-d8ba98117626
