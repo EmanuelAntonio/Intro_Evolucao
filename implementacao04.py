@@ -3,8 +3,8 @@ from implementacao01 import *
 
 
 def plot_p_t(p, q, t, caso):
-    plt.plot(t[1:], p[1:], label="p")
-    plt.plot(t[1:], q[1:], label="q")
+    plt.plot(t[1:-1], p[1:-1], label="p")
+    plt.plot(t[1:-1], q[1:-1], label="q")
     plt.title("p x t (p0 = " + str(p[0]) + ")")
     plt.legend()
     plt.xlabel("t")
@@ -15,19 +15,20 @@ def plot_p_t(p, q, t, caso):
 
 
 def plot_p_deltap(p, dp, caso):
-    plt.plot(p[1:], dp[1:])
+    plt.plot(p[1:-1], dp[1:-1])
     plt.title("p x Δp (p0 = " + str(p[0]) + ")")
     plt.xlabel("p")
     plt.ylabel("Δp")
-    plt.xlim(np.min(p), np.max(p))
+    plt.xlim(0, 1)
+    # plt.xlim(np.min(p) - 0.1 * np.min(p), np.max(p) + 0.1 * np.max(p))
     plt.savefig(path + "/implementacao04/" + caso + "_p0_" + str(p[0]) + "_p_x_deltap.png", dpi=300)
     plt.close()
 
 
 def plot_p_alelo(p, AA, Aa, aa, caso):
-    plt.plot(p[1:], AA[1:], label="AA")
-    plt.plot(p[1:], Aa[1:], label="Aa")
-    plt.plot(p[1:], aa[1:], label="aa")
+    plt.plot(p[1:-1], AA[1:-1], label="AA")
+    plt.plot(p[1:-1], Aa[1:-1], label="Aa")
+    plt.plot(p[1:-1], aa[1:-1], label="aa")
     plt.title("p x AA, Aa, aa (p0 = " + str(p[0]) + ")")
     plt.xlabel("p")
     plt.ylabel("Fequência Alélica")
@@ -37,8 +38,8 @@ def plot_p_alelo(p, AA, Aa, aa, caso):
 
 
 def plot_p_wmed(p, w_med, caso):
-    plt.plot(p[1:], w_med[1:])
-    plt.title("p x W_med (p0 = " + str(p[0]) + ")")
+    plt.plot(p[1:-1], w_med[1:-1])
+    plt.title("p x W_avg (p0 = " + str(p[0]) + ")")
     plt.xlabel("p")
     plt.ylabel("w_avg")
     # plt.xlim(0, 1)
@@ -85,5 +86,4 @@ def implementacao04():
             plot_p_deltap(p_array, delta_p, casos[int(w[3])])
             plot_p_alelo(p_array, AA, Aa, aa, casos[int(w[3])])
             plot_p_wmed(p_array, w_med, casos[int(w[3])])
-            # print(delta_p)
 
