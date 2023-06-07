@@ -26,7 +26,8 @@ if not os.path.exists("./implementacao03"):
     os.mkdir("./implementacao03")
 # implementacao3()
 # implementacao32()
-implementacao33()
+# implementacao33()
+implementacao34()
 
 # if not os.path.exists("./implementacao04"):
 #     os.mkdir("./implementacao04")
