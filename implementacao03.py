@@ -194,14 +194,14 @@ def implementacao32():
 def melhor_pontuacao(individuos, pontuacoes):
     indice_max = 0
     for i in range(1, len(pontuacoes)):
-        if pontuacoes[i] > pontuacoes[i]:
+        if pontuacoes[i] > pontuacoes[indice_max]:
             indice_max = i
     individuo1 = copy.deepcopy(individuos[indice_max])
     del pontuacoes[indice_max]
     del individuos[indice_max]
     indice_max = 0
     for i in range(1, len(pontuacoes)):
-        if pontuacoes[i] > pontuacoes[i]:
+        if pontuacoes[i] > pontuacoes[indice_max]:
             indice_max = i
     individuo2 = copy.deepcopy(individuos[indice_max])
     del pontuacoes[indice_max]
@@ -214,33 +214,60 @@ def recombinacao(individuo1, individuo2):
     N = len(individuo1)
     rnd = (N - 2) * np.random.random_sample()
     rnd = int(np.round(rnd + 1))
-    
+    novo_individuo1 = individuo1[0:rnd] + individuo2[rnd:N]
+    novo_individuo2 = individuo2[0:rnd] + individuo1[rnd:N]
+    return novo_individuo1, novo_individuo2
+
 
 def implementacao33_cont(palavra, alfabeto, alfabeto_indice, u, N):
     size = len(palavra)
     individuos = []
     pontuacoes = []
-    max_pontuacao = 0
+    EPSILON = 1E-3
     for i in range(N):
         individuos.append(''.join(random.choice(alfabeto) for _ in range(size)))
         pontuacao = calcula_pontuacao(palavra, individuos[i], alfabeto_indice, u)
         pontuacoes.append(pontuacao)
     objetivo = calcula_pontuacao(palavra, palavra, alfabeto_indice, u)
     max_pontuacao = np.max(pontuacoes)
+    melhor_individuo1, melhor_individuo2 = melhor_pontuacao(individuos, pontuacoes)
     cont = 1
     while max_pontuacao < (objetivo - EPSILON):
-        melhor_individuo1, melhor_individuo2 = melhor_pontuacao(individuos, pontuacoes)
         individuos.clear()
         pontuacoes.clear()
-        indice_max_pontuacao = -1
-        max_pontuacao = 0
-        for i in range(N):
-            individuo = mutacao(melhor_individuo, alfabeto, alfabeto_indice, u)
-            individuos.append(individuo)
-            pontuacao = calcula_pontuacao(palavra, individuo, alfabeto_indice, u)
-            pontuacoes.append(pontuacao)
-            if pontuacao > max_pontuacao:
-                max_pontuacao = pontuacao
-                indice_max_pontuacao = i
+        for i in range(0, N, 2):
+            novo_individuo1, novo_individuo2 = recombinacao(melhor_individuo1, melhor_individuo2)
+            novo_individuo1 = mutacao(novo_individuo1, alfabeto, alfabeto_indice, u)
+            novo_individuo2 = mutacao(novo_individuo2, alfabeto, alfabeto_indice, u)
+            individuos.append(novo_individuo1)
+            individuos.append(novo_individuo2)
+            pontuacoes.append(calcula_pontuacao(palavra, novo_individuo1, alfabeto_indice, u))
+            pontuacoes.append(calcula_pontuacao(palavra, novo_individuo2, alfabeto_indice, u))
+        max_pontuacao = np.max(pontuacoes)
+        melhor_individuo1, melhor_individuo2 = melhor_pontuacao(individuos, pontuacoes)
+        # print(melhor_individuo1, melhor_individuo2)
+        # print(max_pontuacao, objetivo)
+        # print(calcula_pontuacao(palavra, melhor_individuo1, alfabeto_indice, u), calcula_pontuacao(palavra, melhor_individuo2, alfabeto_indice, u))
+        # print(pontuacoes)
         cont += 1
     return cont
+
+
+def implementacao33():
+    # u = np.array([[0.7, 0.1, 0.1, 0.1],[0.1, 0.7, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7]])
+    # u = np.array([[0.6, 0.05, 0.05, 0.3],[0.05, 0.6, 0.3, 0.05], [0.05, 0.3, 0.6, 0.05], [0.3, 0.05, 0.05, 0.6]])
+    u = np.array([[0.7, 0.025, 0.025, 0.25], [0.025, 0.7, 0.25, 0.025], [0.025, 0.25, 0.7, 0.025], [0.25, 0.025, 0.025, 0.7]])
+    # u = np.array([[0.5, 0.1, 0.1, 0.3],[0.1, 0.5, 0.3, 0.1], [0.1, 0.3, 0.5, 0.1], [0.3, 0.1, 0.1, 0.5]])
+
+    palavra = carregar_palavra_base_dados('E.coli-sequence.txt', 7)
+    alfabeto = ['a', 't', 'c', 'g']
+    alfabeto_indice = {'a': 0, 't': 1, 'c': 2, 'g': 3}
+    N = 10
+
+    distribuicao = []
+    for _ in range(20):
+        distribuicao.append(implementacao33_cont(palavra, alfabeto, alfabeto_indice, u, N))
+
+    print("Implementação 3.3:\nPara encontrar \"" + palavra + "\" com o alfabeto", alfabeto, "demorou em média",
+          np.average(distribuicao),
+          "tentativas, com desvio padrão", np.std(distribuicao))
