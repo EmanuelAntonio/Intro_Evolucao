@@ -337,7 +337,7 @@ def implementacao34():
     u = np.array([[0.7, 0.025, 0.025, 0.25], [0.025, 0.7, 0.25, 0.025], [0.025, 0.25, 0.7, 0.025], [0.25, 0.025, 0.025, 0.7]])
     # u = np.array([[0.5, 0.1, 0.1, 0.3],[0.1, 0.5, 0.3, 0.1], [0.1, 0.3, 0.5, 0.1], [0.3, 0.1, 0.1, 0.5]])
 
-    palavra = carregar_palavra_base_dados('E.coli-sequence.txt', 7)
+    palavra = carregar_palavra_base_dados('E.coli-sequence.txt', 15)
     alfabeto = ['a', 't', 'c', 'g']
     alfabeto_indice = {'a': 0, 't': 1, 'c': 2, 'g': 3}
     N = 10
@@ -348,4 +348,101 @@ def implementacao34():
         distribuicao.append(implementacao34_cont(palavra, alfabeto, alfabeto_indice, u, prob_deriva, N))
 
     print("Implementação 3.4:\nPara encontrar \"" + palavra + "\" com o alfabeto", alfabeto, "demorou em média",
+          np.average(distribuicao), "tentativas, com desvio padrão", np.std(distribuicao))
+
+
+def implementacao35_sim_populacao(palavra, individuo1, individuo2, alfabeto, alfabeto_indice, u, N):
+    individuos = []
+    pontuacoes = []
+    for i in range(0, N, 2):
+        novo_individuo1, novo_individuo2 = recombinacao(individuo1, individuo2)
+        novo_individuo1 = mutacao(novo_individuo1, alfabeto, alfabeto_indice, u)
+        novo_individuo2 = mutacao(novo_individuo2, alfabeto, alfabeto_indice, u)
+        individuos.append(novo_individuo1)
+        individuos.append(novo_individuo2)
+        pontuacoes.append(calcula_pontuacao(palavra, novo_individuo1, alfabeto_indice, u))
+        pontuacoes.append(calcula_pontuacao(palavra, novo_individuo2, alfabeto_indice, u))
+    return individuos, pontuacoes
+
+
+def seleciona_aleatoriamente(populacao, quant):
+    selecionados = []
+    for _ in range(quant):
+        indice = int(np.round((len(populacao) - 1) * np.random.random_sample()))
+        selecionados.append(copy.deepcopy(populacao[indice]))
+        del populacao[indice]
+    return selecionados
+
+
+def elimina_piores(populacao, pontuacoes, quant):
+    for _ in range(quant):
+        indice_min = 0
+        for i in range(1, len(pontuacoes)):
+            try:
+                if pontuacoes[i] < pontuacoes[indice_min]:
+                    indice_min = i
+            except:
+                print(i, indice_min, len(populacao), len(pontuacoes), "\n", populacao, pontuacoes)
+                exit()
+        del pontuacoes[indice_min]
+        del populacao[indice_min]
+
+
+
+def implementacao35_cont(palavra, alfabeto, alfabeto_indice, u, prob_deriva, taxa_migracao, N):
+    size = len(palavra)
+    individuos = []
+    pontuacoes = []
+    EPSILON = 1E-3
+    for i in range(N):
+        individuos.append(''.join(random.choice(alfabeto) for _ in range(size)))
+        pontuacao = calcula_pontuacao(palavra, individuos[i], alfabeto_indice, u)
+        pontuacoes.append(pontuacao)
+    objetivo = calcula_pontuacao(palavra, palavra, alfabeto_indice, u)
+    max_pontuacao = np.max(pontuacoes)
+    cont = 1
+    while max_pontuacao < (objetivo - EPSILON):
+        elimina_piores(individuos, pontuacoes, taxa_migracao)
+        melhor_individuo1, melhor_individuo2 = melhor_pontuacao_deriva(individuos, pontuacoes, prob_deriva)
+        for _ in range(0, taxa_migracao, 2):
+            novo_individuo1, novo_individuo2 = recombinacao(melhor_individuo1, melhor_individuo2)
+            novo_individuo1 = mutacao(novo_individuo1, alfabeto, alfabeto_indice, u)
+            novo_individuo2 = mutacao(novo_individuo2, alfabeto, alfabeto_indice, u)
+            individuos.append(novo_individuo1)
+            individuos.append(novo_individuo2)
+            pontuacoes.append(calcula_pontuacao(palavra, novo_individuo1, alfabeto_indice, u))
+            pontuacoes.append(calcula_pontuacao(palavra, novo_individuo2, alfabeto_indice, u))
+        individuos.append(melhor_individuo1)
+        individuos.append(melhor_individuo2)
+        pontuacoes.append(calcula_pontuacao(palavra, melhor_individuo1, alfabeto_indice, u))
+        pontuacoes.append(calcula_pontuacao(palavra, melhor_individuo2, alfabeto_indice, u))
+        max_pontuacao = np.max(pontuacoes)
+        # print(melhor_individuo1, melhor_individuo2)
+        # print(max_pontuacao, objetivo)
+        # print(calcula_pontuacao(palavra, melhor_individuo1, alfabeto_indice, u), calcula_pontuacao(palavra, melhor_individuo2, alfabeto_indice, u))
+        # print(pontuacoes)
+        cont += 1
+    return cont
+
+
+def implementacao35():
+    # u = np.array([[0.7, 0.1, 0.1, 0.1],[0.1, 0.7, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7]])
+    # u = np.array([[0.6, 0.05, 0.05, 0.3],[0.05, 0.6, 0.3, 0.05], [0.05, 0.3, 0.6, 0.05], [0.3, 0.05, 0.05, 0.6]])
+    u = np.array([[0.7, 0.025, 0.025, 0.25], [0.025, 0.7, 0.25, 0.025], [0.025, 0.25, 0.7, 0.025], [0.25, 0.025, 0.025, 0.7]])
+    # u = np.array([[0.5, 0.1, 0.1, 0.3],[0.1, 0.5, 0.3, 0.1], [0.1, 0.3, 0.5, 0.1], [0.3, 0.1, 0.1, 0.5]])
+
+    palavra = carregar_palavra_base_dados('E.coli-sequence.txt', 7)
+    alfabeto = ['a', 't', 'c', 'g']
+    alfabeto_indice = {'a': 0, 't': 1, 'c': 2, 'g': 3}
+    N = 10
+    prob_deriva = 0.1
+    taxa_migracao = int(np.round(0.8 * N))
+    if taxa_migracao % 2 != 0:
+        taxa_migracao += 1
+
+    distribuicao = []
+    for _ in range(1):
+        distribuicao.append(implementacao35_cont(palavra, alfabeto, alfabeto_indice, u, prob_deriva, taxa_migracao, N))
+
+    print("Implementação 3.5:\nPara encontrar \"" + palavra + "\" com o alfabeto", alfabeto, "demorou em média",
           np.average(distribuicao), "tentativas, com desvio padrão", np.std(distribuicao))

@@ -41,12 +41,10 @@ def plot_AA_Aa_aa_t(t, AA, Aa, aa, p0, u, v, caso, grafico):
 
 def implementacao06():
     casos = ["padrao", "dominancia", "codominancia", "sobredominancia", "desvantagem"]
-    w0 = np.array([[1, 0.5, 0.25, 0]],
-                  dtype=np.float64)
-    # w0 = np.array([[1, 0.5, 0.25, 0], [1, 1, 0.9, 1], [1, 0.9, 0.8, 2], [0.9, 1, 0.9, 3], [1, 0.9, 1, 4]],
-    #               dtype=np.float64)
-    p0 = np.array([0.5], dtype=np.float64)
-    # p0 = np.array([0.2, 0.5, 0.8], dtype=np.float64)
+    # w0 = np.array([[1, 0.5, 0.25, 0]], dtype=np.float64)
+    w0 = np.array([[1, 0.5, 0.25, 0], [1, 1, 0.9, 1], [1, 0.9, 0.8, 2], [0.9, 1, 0.9, 3], [1, 0.9, 1, 4]], dtype=np.float64)
+    # p0 = np.array([0.5], dtype=np.float64)
+    p0 = np.array([0.2, 0.5, 0.8], dtype=np.float64)
     t = 40
     AA = np.array(range(t), dtype=np.float64)
     Aa = np.array(range(t), dtype=np.float64)
