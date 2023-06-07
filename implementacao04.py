@@ -74,7 +74,7 @@ def implementacao04():
             while t0 < t:
                 w_avg = AA[t0 - 1] * w[0] + Aa[t0 - 1] * w[1] + aa[t0 - 1] * w[2]
                 p_array[t0] = (AA[t0 - 1] * w[0] + 0.5 * Aa[t0 - 1] * w[1]) / w_avg
-                q_array[t0] = (aa[t0 - 1] * w[0] + 0.5 * Aa[t0 - 1] * w[1]) / w_avg
+                q_array[t0] = (aa[t0 - 1] * w[2] + 0.5 * Aa[t0 - 1] * w[1]) / w_avg
                 AA[t0] = p_array[t0] * p_array[t0]
                 Aa[t0] = 2 * p_array[t0] * q_array[t0]
                 aa[t0] = q_array[t0] * q_array[t0]
