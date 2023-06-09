@@ -43,6 +43,8 @@ def implementacao3():
     print("Implementação 03:\nPara encontrar \"" + palavra + "\" com o alfabeto", alfabeto, "demorou em média", np.average(distribuicao),
           "tentativas, com desvio padrão", np.std(distribuicao))
 
+    salvar_output(palavra, alfabeto, distribuicao, nome="implementacao3")
+
 
 def implementacao31():
     num_randomizacoes = 200
@@ -93,6 +95,8 @@ def implementacao31():
     plt.legend(loc='upper right')
     plt.savefig(path + "/implementacao03/grafico_0.0_0.1.png", dpi=300)
     plt.close()
+    
+    salvar_output(palavra, alfabeto, distribuicao, nome="implementacao31")
 
 
 def calcula_pontuacao(palavra_objetivo, palavra, alfabeto_indice, u):
@@ -190,6 +194,7 @@ def implementacao32():
     print("Implementação 3.2:\nPara encontrar \"" + palavra + "\" com o alfabeto", alfabeto, "demorou em média", np.average(distribuicao),
           "tentativas, com desvio padrão", np.std(distribuicao))
 
+    salvar_output(palavra, alfabeto, distribuicao, nome="implementacao32")
 
 def melhor_pontuacao(individuos, pontuacoes):
     indice_max = 0
@@ -271,6 +276,8 @@ def implementacao33():
     print("Implementação 3.3:\nPara encontrar \"" + palavra + "\" com o alfabeto", alfabeto, "demorou em média",
           np.average(distribuicao),
           "tentativas, com desvio padrão", np.std(distribuicao))
+          
+    salvar_output(palavra, alfabeto, distribuicao, nome="implementacao33")
 
 
 def melhor_pontuacao_deriva(individuos, pontuacoes, prob_deriva):
@@ -336,7 +343,7 @@ def implementacao34():
     # u = np.array([[0.6, 0.05, 0.05, 0.3],[0.05, 0.6, 0.3, 0.05], [0.05, 0.3, 0.6, 0.05], [0.3, 0.05, 0.05, 0.6]])
     u = np.array([[0.7, 0.025, 0.025, 0.25], [0.025, 0.7, 0.25, 0.025], [0.025, 0.25, 0.7, 0.025], [0.25, 0.025, 0.025, 0.7]])
     # u = np.array([[0.5, 0.1, 0.1, 0.3],[0.1, 0.5, 0.3, 0.1], [0.1, 0.3, 0.5, 0.1], [0.3, 0.1, 0.1, 0.5]])
-
+    
     palavra = carregar_palavra_base_dados('E.coli-sequence.txt', 15)
     alfabeto = ['a', 't', 'c', 'g']
     alfabeto_indice = {'a': 0, 't': 1, 'c': 2, 'g': 3}
@@ -349,6 +356,8 @@ def implementacao34():
 
     print("Implementação 3.4:\nPara encontrar \"" + palavra + "\" com o alfabeto", alfabeto, "demorou em média",
           np.average(distribuicao), "tentativas, com desvio padrão", np.std(distribuicao))
+          
+    salvar_output(palavra, alfabeto, distribuicao, nome="implementacao34")
 
 
 def implementacao35_sim_populacao(palavra, individuo1, individuo2, alfabeto, alfabeto_indice, u, N):
@@ -446,3 +455,18 @@ def implementacao35():
 
     print("Implementação 3.5:\nPara encontrar \"" + palavra + "\" com o alfabeto", alfabeto, "demorou em média",
           np.average(distribuicao), "tentativas, com desvio padrão", np.std(distribuicao))
+          
+    salvar_output(palavra, alfabeto, distribuicao, nome="implementacao35")
+    
+     
+
+def salvar_output(palavra, alfabeto, distribuicao, nome):
+    tempo_medio = np.average(distribuicao)
+    tentativas_desvpad = np.std(distribuicao)
+
+
+    with open("./implementacao03/"+nome+".txt", "w") as arquivo:
+        # Redireciona a saída para o arquivo
+        print(f"palavra: {palavra}, alfabeto: {alfabeto},tempo_medio: {tempo_medio},tentativas_desvpadrao: {tentativas_desvpad}", file=arquivo)
+
+    print("Resultados salvos no arquivo "+ nome)
